@@ -4,7 +4,6 @@
 #include "LoggerGetter.h"
 #include <format>
 
-
 namespace Const
 {
 	constexpr SDL_Rect DefaultRect{ 500, 200, 100, 100 };
@@ -126,18 +125,17 @@ void Scene::resetFrameBuffer(const int width, const int height) {
 
 	Log::Debug(std::format("pitch: {}", pitch));
 
-	// input
-	float initial = 0.f;
-	float final = 1.f;
-	int num_divisions_x = 3;
+	// Inicio del porcentaje de color y número de divisiones
+	float initial = 1.f;
+	float final = 0.5f;
+	int num_divisions_x = 10;
 
-	// vars
-	float differencial = (final-initial) / num_divisions_x;
+	float diferencial = (final - initial) / num_divisions_x;
 
-	// TODO: Set the proper frame buffer size
-	const int frameBufferSize = width * height;
+	// Tamaño modificado del framebuffer
+	const int frameBufferSize = height * width;
 	for (int i = 0; i < frameBufferSize; ++i) {
-		// TODO: Find the pixel coordinates for each index
+		// Coordenadas del píxel
 		const SDL_Point pixelCoords{
 			.x = i % width,
 			.y = i / width,
@@ -145,12 +143,15 @@ void Scene::resetFrameBuffer(const int width, const int height) {
 
 		int division_x = num_divisions_x * pixelCoords.x / width;
 
-		// TODO: Make a red gradient in the 'x' axis and a green gradient in the 'y' axis
+		// Cálculo del porcentaje de rojo por división
+		float colorPercentage = initial + diferencial * (float)division_x;
+		int red = (int)(255.f * colorPercentage);
+
 		ImColor color{
-			 pixelCoords.x * 255 / width,
-			 255,
-			 0,
-			 255,
+			red,
+			0,
+			0,
+			255,
 		};
 
 		pixelData[i] = static_cast<ImU32>(color);
